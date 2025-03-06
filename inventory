@@ -1,0 +1,14 @@
+[prometheus]
+192.168.100.105 ansible_ssh_user=vagrant ansible_ssh_private_key_file=ssh_keys/private_key_vm1
+
+[node_exporter]
+192.168.100.105 ansible_ssh_user=vagrant ansible_ssh_private_key_file=ssh_keys/private_key_vm1
+192.168.100.106 ansible_ssh_user=vagrant ansible_ssh_private_key_file=ssh_keys/private_key_vm2
+192.168.100.107 ansible_ssh_user=vagrant ansible_ssh_private_key_file=ssh_keys/private_key_vm3
+
+[alertmanager]
+192.168.100.105 ansible_ssh_user=vagrant ansible_ssh_private_key_file=ssh_keys/private_key_vm1
+
+[grafana]
+192.168.100.105 ansible_ssh_user=vagrant ansible_ssh_private_key_file=ssh_keys/private_key_vm1
+
