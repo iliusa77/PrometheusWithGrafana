@@ -17,6 +17,7 @@
     src: "https://github.com/prometheus/prometheus/releases/download/v{{ version }}/prometheus-{{ version }}.linux-amd64.tar.gz"
     dest: /tmp/
     remote_src: yes
+  when: ansible_facts.architecture == "amd64"
 
 - name: Copy prometheus file to bin
   copy:
@@ -26,11 +27,36 @@
     group: "{{groupId}}"
     remote_src: yes
     mode: 0755
+  when: ansible_facts.architecture == "amd64"
 
 - name: Delete prometheus tmp folder
   file:
     path: '/tmp/prometheus-{{ version }}.linux-amd64'
     state: absent
+  when: ansible_facts.architecture == "amd64"
+
+- name: Install prometheus arm64
+  unarchive:
+    src: "https://github.com/prometheus/prometheus/releases/download/v{{ version }}/prometheus-{{ version }}.linux-arm64.tar.gz"
+    dest: /tmp/
+    remote_src: yes
+  when: ansible_facts.architecture == "aarch64"
+
+- name: Copy prometheus file to bin arm64
+  copy:
+    src: "/tmp/prometheus-{{ version }}.linux-arm64/prometheus"
+    dest: "/usr/local/bin/prometheus"
+    owner: "{{userId}}"
+    group: "{{groupId}}"
+    remote_src: yes
+    mode: 0755
+  when: ansible_facts.architecture == "aarch64"
+
+- name: Delete prometheus tmp folder arm64
+  file:
+    path: '/tmp/prometheus-{{ version }}.linux-arm64'
+    state: absent
+  when: ansible_facts.architecture == "aarch64"
 
 - name: Creates directory
   file: 

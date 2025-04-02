@@ -21,6 +21,7 @@
   until: download_node_exporter is not failed
   retries: 5
   delay: 3
+  when: ansible_facts.architecture == "amd64"
 
 - name: Copy prometheus node exporter file to bin
   copy:
@@ -30,11 +31,40 @@
     group: "{{groupId}}"
     remote_src: yes
     mode: 0755
+  when: ansible_facts.architecture == "amd64"
 
 - name: Delete node exporter tmp folder
   file:
     path: '/tmp/node_exporter-{{ version }}.linux-amd64'
     state: absent
+  when: ansible_facts.architecture == "amd64"
+
+- name: Install prometheus node exporter linux-arm64
+  unarchive:
+    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ version }}/node_exporter-{{ version }}.linux-arm64.tar.gz"
+    dest: /tmp/
+    remote_src: yes
+  register: download_node_exporter
+  until: download_node_exporter is not failed
+  retries: 5
+  delay: 3
+  when: ansible_facts.architecture == "aarch64"
+
+- name: Copy prometheus node exporter file to bin linux-arm64
+  copy:
+    src: "/tmp/node_exporter-{{ version }}.linux-arm64/node_exporter"
+    dest: "/usr/local/bin/node_exporter"
+    owner: "{{userId}}"
+    group: "{{groupId}}"
+    remote_src: yes
+    mode: 0755
+  when: ansible_facts.architecture == "aarch64" 
+
+- name: Delete node exporter tmp folder linux-arm64
+  file:
+    path: '/tmp/node_exporter-{{ version }}.linux-arm64'
+    state: absent
+  when: ansible_facts.architecture == "aarch64"
 
 - name: Copy systemd init file
   template:
